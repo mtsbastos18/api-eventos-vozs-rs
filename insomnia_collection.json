@@ -1,0 +1,463 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-04-26T12:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_event_api",
+      "parentId": null,
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "name": "Event Management API",
+      "description": "API RESTful para Gestão de Eventos com JWT",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_event_api",
+      "parentId": "wrk_event_api",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://127.0.0.1:8000/api",
+        "token": "coloque_seu_token_aqui"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "token"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1714132800000,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_event_api",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "name": "Auth (JWT)",
+      "description": "Rotas de Autenticação",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1714132900000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_admin",
+      "parentId": "wrk_event_api",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "name": "Admin",
+      "description": "Rotas Administrativas. Exigem Autenticação JWT (Bearer Token).",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1714132800000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_public",
+      "parentId": "wrk_event_api",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "name": "Public",
+      "description": "Rotas Públicas (Participantes).",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1714132700000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_register",
+      "parentId": "fld_auth",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/auth/register",
+      "name": "Register",
+      "description": "Registra um novo Admin",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"Admin Name\",\n\t\"email\": \"admin@example.com\",\n\t\"password\": \"password123\",\n\t\"password_confirmation\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -100,
+      "_type": "request"
+    },
+    {
+      "_id": "req_login",
+      "parentId": "fld_auth",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "Login",
+      "description": "Obtém um token JWT",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"email\": \"admin@example.com\",\n\t\"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -90,
+      "_type": "request"
+    },
+    {
+      "_id": "req_me",
+      "parentId": "fld_auth",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/auth/me",
+      "name": "Me (Authenticated User)",
+      "description": "Dados do usuário autenticado",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -80,
+      "_type": "request"
+    },
+    {
+      "_id": "req_forgot_password",
+      "parentId": "fld_auth",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/auth/forgot-password",
+      "name": "Forgot Password",
+      "description": "Envia o link de recuperação",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"email\": \"admin@example.com\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -70,
+      "_type": "request"
+    },
+    {
+      "_id": "req_dashboard",
+      "parentId": "fld_admin",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/admin/events/dashboard",
+      "name": "Dashboard",
+      "description": "Contagem de inscritos vs. capacidade",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -100,
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_event",
+      "parentId": "fld_admin",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/admin/events",
+      "name": "Create Event",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"title\": \"Tech Conference 2026\",\n\t\"date\": \"2026-10-15 09:00:00\",\n\t\"location\": \"São Paulo, SP\",\n\t\"description\": \"A maior conferência de tecnologia do ano.\",\n\t\"capacity\": 500\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -90,
+      "_type": "request"
+    },
+    {
+      "_id": "req_list_events",
+      "parentId": "fld_admin",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/admin/events",
+      "name": "List Events",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -80,
+      "_type": "request"
+    },
+    {
+      "_id": "req_show_event",
+      "parentId": "fld_admin",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/admin/events/1",
+      "name": "Show Event",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -70,
+      "_type": "request"
+    },
+    {
+      "_id": "req_update_event",
+      "parentId": "fld_admin",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/admin/events/1",
+      "name": "Update Event",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"capacity\": 600\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -60,
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete_event",
+      "parentId": "fld_admin",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/admin/events/1",
+      "name": "Delete Event",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -50,
+      "_type": "request"
+    },
+    {
+      "_id": "req_list_participants",
+      "parentId": "fld_admin",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/admin/events/1/participants",
+      "name": "List Event Participants",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -40,
+      "_type": "request"
+    },
+    {
+      "_id": "req_register_participant",
+      "parentId": "fld_public",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/events/register",
+      "name": "Register Participant",
+      "description": "Inscrição de participante em evento",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"event_id\": 1,\n\t\"name\": \"João Silva\",\n\t\"email\": \"joao.silva@example.com\",\n\t\"document\": \"12345678909\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -100,
+      "_type": "request"
+    },
+    {
+      "_id": "req_verify_participant",
+      "parentId": "fld_public",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/events/register/verify",
+      "name": "Verify Participant Email",
+      "description": "Valida o código de email para confirmar inscrição",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"event_id\": 1,\n\t\"email\": \"joao.silva@example.com\",\n\t\"code\": \"123456\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -95,
+      "_type": "request"
+    },
+    {
+      "_id": "req_public_list_events",
+      "parentId": "fld_public",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/events",
+      "name": "List Available Events",
+      "description": "Lista os eventos com data futura",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -90,
+      "_type": "request"
+    },
+    {
+      "_id": "req_public_show_event",
+      "parentId": "fld_public",
+      "modified": 1714132800000,
+      "created": 1714132800000,
+      "url": "{{ _.base_url }}/events/1",
+      "name": "Show Event Details",
+      "description": "Detalhes de um evento específico e vagas restantes",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -80,
+      "_type": "request"
+    }
+  ]
+}
