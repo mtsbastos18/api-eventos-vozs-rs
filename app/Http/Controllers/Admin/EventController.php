@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Event;
 
 class EventController extends Controller
@@ -23,15 +24,29 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
             'capacity' => 'required|integer|min:1',
+            'image' => 'nullable|image|max:5120',
         ]);
 
-        $event = Event::create($validated);
+        // Primeiro criamos o evento para ter o ID
+        $event = Event::create(collect($validated)->except('image')->toArray());
 
-        return response()->json($event, 201);
+        if ($request->hasFile('image')) {
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = $event->id . '.' . $extension;
+
+            // Salvando no nosso disco customizado de hospedagem
+            $path = $request->file('image')->storeAs('events', $filename, 'servidor_compartilhado');
+
+            $event->update(['image_path' => $path]);
+        }
+
+        // Carrega o evento atualizado com o path
+        return response()->json($event->fresh(), 201);
     }
 
     /**
@@ -49,11 +64,26 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
             'date' => 'sometimes|required|date',
             'location' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
             'capacity' => 'sometimes|required|integer|min:1',
+            'image' => 'nullable|image|max:5120',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Remove a imagem antiga, se existir
+            if ($event->image_path) {
+                Storage::disk('servidor_compartilhado')->delete($event->image_path);
+            }
+
+            // Salva a nova imagem com o ID do evento
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = $event->id . '.' . $extension;
+
+            $validated['image_path'] = $request->file('image')->storeAs('events', $filename, 'servidor_compartilhado');
+        }
 
         $event->update($validated);
 
@@ -65,6 +95,9 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        if ($event->image_path) {
+            Storage::disk('servidor_compartilhado')->delete($event->image_path);
+        }
         $event->delete();
         return response()->json(null, 204);
     }
@@ -83,6 +116,7 @@ class EventController extends Controller
                 'capacity' => $event->capacity,
                 'participants_count' => $event->participants_count,
                 'available_spots' => $event->capacity - $event->participants_count,
+                'image_url' => $event->image_url,
             ];
         });
 

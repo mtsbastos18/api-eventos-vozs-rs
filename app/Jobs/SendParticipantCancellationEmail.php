@@ -5,10 +5,10 @@ namespace App\Jobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Models\Participant;
-use App\Mail\ParticipantEmailVerification;
+use App\Mail\ParticipantRegistrationCancelled;
 use Illuminate\Support\Facades\Mail;
 
-class SendParticipantVerificationEmail implements ShouldQueue
+class SendParticipantCancellationEmail implements ShouldQueue
 {
     use Queueable;
 
@@ -22,14 +22,22 @@ class SendParticipantVerificationEmail implements ShouldQueue
      */
     public $backoff = 60;
 
-    public $participant;
+    public $participantData;
 
     /**
      * Create a new job instance.
      */
     public function __construct(Participant $participant)
     {
-        $this->participant = $participant;
+        $this->participantData = [
+            'id' => $participant->id,
+            'name' => $participant->name,
+            'email' => $participant->email,
+            'phone' => $participant->phone,
+            'document' => $participant->document,
+            'event_id' => $participant->event_id,
+            'event' => $participant->event,
+        ];
     }
 
     /**
@@ -37,6 +45,6 @@ class SendParticipantVerificationEmail implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->participant->email)->send(new ParticipantEmailVerification($this->participant));
+        Mail::to($this->participantData['email'])->send(new ParticipantRegistrationCancelled($this->participantData));
     }
 }

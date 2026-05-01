@@ -41,7 +41,18 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        // Novo disco customizado para Hospedagem Compartilhada
+        'servidor_compartilhado' => [
+            'driver' => 'local',
+            // Pega o caminho real do servidor através de uma variável de ambiente, se não achar cai pro public local
+            'root' => env('PUBLIC_HTML_PATH', public_path('storage')),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

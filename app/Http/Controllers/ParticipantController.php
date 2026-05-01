@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Participant;
 use App\Jobs\SendEventRegistrationEmail;
 use App\Jobs\SendParticipantVerificationEmail;
+use App\Jobs\SendParticipantCancellationEmail;
 
 class ParticipantController extends Controller
 {
@@ -16,6 +17,7 @@ class ParticipantController extends Controller
             'event_id' => 'required|exists:events,id',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
             'document' => 'required|string|max:20',
         ]);
 
@@ -81,5 +83,20 @@ class ParticipantController extends Controller
         SendEventRegistrationEmail::dispatch($participant);
 
         return response()->json(['message' => 'E-mail verificado com sucesso. Inscrição final confirmada e enviada para o e-mail!']);
+    }
+
+    public function destroy($eventId, $participantId)
+    {
+        $event = Event::findOrFail($eventId);
+        $participant = Participant::where('id', $participantId)
+            ->where('event_id', $event->id)
+            ->firstOrFail();
+        // Dispara o job de cancelamento de inscrição
+        SendParticipantCancellationEmail::dispatch($participant);
+
+
+        $participant->delete();
+
+        return response()->json(['message' => 'Participante removido com sucesso do evento.']);
     }
 }

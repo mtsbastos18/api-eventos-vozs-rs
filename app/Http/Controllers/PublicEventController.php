@@ -23,8 +23,12 @@ class PublicEventController extends Controller
     /**
      * Show details of a specific event.
      */
-    public function show(Event $event)
+    public function show($identifier)
     {
+        $event = Event::where('id', $identifier)
+            ->orWhere('slug', $identifier)
+            ->firstOrFail();
+
         // Opcional: carregar contagem de participantes se quiser mostrar vagas restantes
         $event->loadCount('participants');
         $event->available_spots = $event->capacity - $event->participants_count;

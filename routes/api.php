@@ -24,6 +24,10 @@ Route::middleware('auth:api')->prefix('admin')->group(function () {
     Route::get('/events/dashboard', [EventController::class, 'dashboard']);
     Route::get('/events/{event}/participants', [EventController::class, 'participants']);
     Route::apiResource('events', EventController::class);
+
+    // Rota para deletar participante (protegida)
+    Route::delete('/events/{event}/participants/{participant}', [ParticipantController::class, 'destroy']);
+
 });
 
 // Rotas Públicas (Participantes)

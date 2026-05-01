@@ -12,6 +12,16 @@ class SendEventRegistrationEmail implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * O número de vezes que o job pode ser tentado.
+     */
+    public $tries = 3;
+
+    /**
+     * O número de segundos para aguardar antes de tentar novamente o job.
+     */
+    public $backoff = 60;
+
     public $participant;
 
     /**
