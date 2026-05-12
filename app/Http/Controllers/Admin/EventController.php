@@ -40,7 +40,7 @@ class EventController extends Controller
             $filename = $event->id . '.' . $extension;
 
             // Salvando no nosso disco customizado de hospedagem
-            $path = $request->file('image')->storeAs('events', $filename, 'servidor_compartilhado');
+            $path = $request->file('image')->storeAs('events', $filename, env('FILESYSTEM_DISK'));
 
             $event->update(['image_path' => $path]);
         }
@@ -75,14 +75,14 @@ class EventController extends Controller
         if ($request->hasFile('image')) {
             // Remove a imagem antiga, se existir
             if ($event->image_path) {
-                Storage::disk('servidor_compartilhado')->delete($event->image_path);
+                Storage::disk(env('FILESYSTEM_DISK'))->delete($event->image_path);
             }
 
             // Salva a nova imagem com o ID do evento
             $extension = $request->file('image')->getClientOriginalExtension();
             $filename = $event->id . '.' . $extension;
 
-            $validated['image_path'] = $request->file('image')->storeAs('events', $filename, 'servidor_compartilhado');
+            $validated['image_path'] = $request->file('image')->storeAs('events', $filename, env('FILESYSTEM_DISK'));
         }
 
         $event->update($validated);
@@ -96,7 +96,7 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         if ($event->image_path) {
-            Storage::disk('servidor_compartilhado')->delete($event->image_path);
+            Storage::disk(env('FILESYSTEM_DISK'))->delete($event->image_path);
         }
         $event->delete();
         return response()->json(null, 204);

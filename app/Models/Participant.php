@@ -17,6 +17,9 @@ class Participant extends Model
         'event_id',
         'verification_code',
         'is_verified',
+        'company',
+        'position',
+        'city',
     ];
 
     protected function casts(): array

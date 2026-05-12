@@ -12,9 +12,20 @@ class PublicEventController extends Controller
      */
     public function index()
     {
-        // Retorna apenas eventos com data maior ou igual a hoje, ordenados pela data mais próxima
-        $events = Event::where('date', '>=', now())
+        // Retorna apenas eventos com data e hora maior ou igual ao momento atual no fuso horário do Brasil
+        $nowBrazil = now()->setTimezone('America/Sao_Paulo');
+        $events = Event::where('date', '>=', $nowBrazil)
             ->orderBy('date', 'asc')
+            ->get();
+
+        return response()->json($events);
+    }
+
+    public function getPastEvents()
+    {
+        // Retorna apenas eventos com data menor que hoje, ordenados pela data mais recente
+        $events = Event::where('date', '<', now())
+            ->orderBy('date', 'desc')
             ->get();
 
         return response()->json($events);

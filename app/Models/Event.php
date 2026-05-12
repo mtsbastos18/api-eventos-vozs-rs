@@ -53,4 +53,8 @@ class Event extends Model
     {
         return $this->hasMany(Participant::class);
     }
+    public function postDetail()
+    {
+        return $this->hasOne(EventPostDetail::class);
+    }
 }
