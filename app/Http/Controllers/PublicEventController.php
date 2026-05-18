@@ -13,7 +13,7 @@ class PublicEventController extends Controller
     public function index()
     {
         // Retorna apenas eventos com data e hora maior ou igual ao momento atual no fuso horário do Brasil
-        $nowBrazil = now()->setTimezone('America/Sao_Paulo');
+        $nowBrazil = now()->setTimezone('America/Sao_Paulo')->subHours(5);
         $events = Event::where('date', '>=', $nowBrazil)
             ->orderBy('date', 'asc')
             ->get();
@@ -24,7 +24,8 @@ class PublicEventController extends Controller
     public function getPastEvents()
     {
         // Retorna apenas eventos com data menor que hoje, ordenados pela data mais recente
-        $events = Event::where('date', '<', now())
+        $nowBrazil = now()->setTimezone('America/Sao_Paulo')->subHours(5);
+        $events = Event::where('date', '<', $nowBrazil)
             ->orderBy('date', 'desc')
             ->get();
 
@@ -36,8 +37,7 @@ class PublicEventController extends Controller
      */
     public function show($identifier)
     {
-        $event = Event::where('id', $identifier)
-            ->orWhere('slug', $identifier)
+        $event = Event::where('slug', $identifier)
             ->firstOrFail();
 
         // Opcional: carregar contagem de participantes se quiser mostrar vagas restantes
