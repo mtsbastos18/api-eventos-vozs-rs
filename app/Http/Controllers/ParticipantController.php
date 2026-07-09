@@ -75,7 +75,9 @@ class ParticipantController extends Controller
         $participant = Participant::create($validated);
 
         // Dispatch the job para enviar o código de verificação
-        SendParticipantVerificationEmail::dispatch($participant);
+        // SendParticipantVerificationEmail::dispatch($participant);
+        SendEventRegistrationEmail::dispatch($participant);
+
 
         return response()->json([
             'message' => 'Inscrição pré-realizada. Verifique seu e-mail para receber o código de confirmação.',

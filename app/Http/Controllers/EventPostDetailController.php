@@ -22,9 +22,8 @@ class EventPostDetailController extends Controller
             'description' => 'nullable|string',
             'images.*' => 'nullable|image',
             'flickrUrl' => 'nullable|string',
+            'youtube_video_url' => 'nullable|url',
         ]);
-
-
 
         // 1. Buscar registro existente
         $postDetail = EventPostDetail::where('event_id', $eventId)->first();
@@ -55,6 +54,7 @@ class EventPostDetailController extends Controller
                 'video_path' => $videoPath,
                 'description' => $data['description'] ?? ($postDetail->description ?? null),
                 'images' => $finalImages,
+                'youtube_video_url' => $data['youtube_video_url'] ?? ($postDetail->youtube_video_url ?? null),
             ]
         );
 
@@ -144,6 +144,7 @@ class EventPostDetailController extends Controller
             'video' => 'nullable|file|mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime',
             'description' => 'nullable|string',
             'images.*' => 'nullable|image',
+            'youtube_video_url' => 'nullable|url',
         ]);
 
         $imagePaths = $postDetail->images ?? [];
@@ -162,6 +163,7 @@ class EventPostDetailController extends Controller
             'video_path' => $videoPath,
             'description' => $data['description'] ?? $postDetail->description,
             'images' => $imagePaths,
+            'youtube_video_url' => $data['youtube_video_url'] ?? $postDetail->youtube_video_url,
         ]);
 
         return response()->json($postDetail);

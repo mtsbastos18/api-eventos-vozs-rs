@@ -15,6 +15,7 @@ class EventPostDetail extends Model
         'description',
         'images',
         'flickr_images',
+        'youtube_video_url',
     ];
 
     protected $casts = [
